@@ -50,7 +50,7 @@ def is_aws_object_subclass(cls):
     return is_aws_object
 
 
-def encode_to_dict(obj):
+def encode_to_dict(obj, hints=None):
     if hasattr(obj, 'to_dict'):
         # Calling encode_to_dict to ensure object is
         # nomalized to a base dictionary all the way down.
@@ -63,13 +63,21 @@ def encode_to_dict(obj):
     elif isinstance(obj, dict):
         props = {}
         for name, prop in obj.items():
-            props[name] = encode_to_dict(prop)
+            validator = None
+            if hints is not None:
+                hint = hints.get(name)
+                if hint is not None:
+                    validator = hint[0]
+            props[name] = encode_to_dict(prop, validator)
 
         return props
     # This is useful when dealing with external libs using
     # this format. Specifically awacs.
     elif hasattr(obj, 'JSONrepr'):
         return encode_to_dict(obj.JSONrepr())
+
+    if hints == validators.boolean:
+        return str(obj).lower() in ("yes", "true", "t", "1")
     return obj
 
 
@@ -244,7 +252,7 @@ class BaseAWSObject(object):
             self.validate()
 
         if self.properties:
-            return encode_to_dict(self.resource)
+            return encode_to_dict(self.resource, hints=self.props)
         elif hasattr(self, 'resource_type'):
             d = {}
             for k, v in self.resource.items():

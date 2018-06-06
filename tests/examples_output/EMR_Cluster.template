@@ -199,7 +199,7 @@
                                     "VolumesPerInstance": "1"
                                 }
                             ],
-                            "EbsOptimized": "true"
+                            "EbsOptimized": true
                         },
                         "InstanceCount": "1",
                         "InstanceType": "m4.large",

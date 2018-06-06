@@ -64,7 +64,7 @@ def encode_to_dict(obj, hints=None):
         props = {}
         for name, prop in obj.items():
             validator = None
-            if hints is not None:
+            if isinstance(hints, dict):
                 hint = hints.get(name)
                 if hint is not None:
                     validator = hint[0]

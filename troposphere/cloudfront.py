@@ -105,6 +105,7 @@ class Logging(AWSProperty):
         'Bucket': (basestring, True),
         'IncludeCookies': (boolean, False),
         'Prefix': (basestring, False),
+        'Enabled': (boolean, True),
     }
 
 
